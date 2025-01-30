@@ -57,7 +57,7 @@ arr.forEach(elem => {
         else if (ids === 'equal') {
             if (operator) {
                 ans = calculate(ans, curans, operator);
-                outputScr.textContent = fitansans;
+                outputScr.textContent = ans;
                 operator = null;
             }
             curans = 0;
