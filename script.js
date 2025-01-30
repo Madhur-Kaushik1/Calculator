@@ -57,7 +57,7 @@ arr.forEach(elem => {
         else if (ids === 'equal') {
             if (operator) {
                 ans = calculate(ans, curans, operator);
-                outputScr.textContent = ans;
+                outputScr.textContent = fitansans;
                 operator = null;
             }
             curans = 0;
@@ -82,7 +82,7 @@ function calculate(a, b, op) {
         case 'mul':
             return a * b;
         case 'div':
-            return b !== 0 ? a / b : 'Error';
+            return b !== 0 ? (a / b).toFixed(10) : 'Error';
         case 'mod':
             return b !== 0 ? a % b : 'Error';
         default:
