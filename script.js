@@ -1,91 +1,108 @@
-const arr = document.querySelectorAll('.btn');
-const outputScr = document.querySelector('.out-scr');
+const outputScreen = document.querySelector('.out-scr')
+const button = document.querySelectorAll('.btn')
+const numArr = ['0','1','2','3','4','5','6','7','8','9']
+const operators = {
+    'mod': '%',
+    'mul': '*',
+    'add': '+',
+    'sub': '-'}
 
-let ans = 0;
-let curans = 0;
-let operator = null;
-let isDecimal = false;
+let val = ''
+let curVal = ''
+let operator = null
 
-arr.forEach(elem => {
-    elem.addEventListener('click', () => {
-        let ids = elem.id;
+button.forEach( (elem) => {
+    elem.addEventListener('click' , () => {
+        let elemId = elem.id
 
-        if (ids === 'clear') {
-            outputScr.textContent = '0';
-            ans = 0;
-            curans = 0;
-            operator = null;
-            isDecimal = false;
-        } 
-        
-        else if (!isNaN(ids)) {
-            if (isDecimal) {
-                const decimalPart = parseFloat(`0.${ids}`);
-                curans += decimalPart;
-                isDecimal = false;
-            } 
-            else {
-                curans = curans * 10 + parseInt(ids);
-            }
-            outputScr.textContent = curans;
-        } 
-        
-        else if (ids === 'dot') {
-            if (!isDecimal) {
-                isDecimal = true;
-                outputScr.textContent = `${curans}.`;
-            }
-        } 
-        
-        else if (['add', 'sub', 'mul', 'div', 'mod'].includes(ids)) {
-            if (operator) {
-                ans = calculate(ans, curans, operator);
-            } else {
-                ans = curans;
-            }
-            operator = ids;
-            curans = 0;
-            isDecimal = false;
-            outputScr.textContent = ans;
-        } 
-        
-        else if (ids === 'sq') {
-            curans = curans ** 2;
-            outputScr.textContent = curans;
-        } 
-        
-        else if (ids === 'equal') {
-            if (operator) {
-                ans = calculate(ans, curans, operator);
-                outputScr.textContent = ans;
-                operator = null;
-            }
-            curans = 0;
+        if (elemId === 'clear'){
+            outputScreen.innerText = 0
+            val = ''
+            curVal = '' 
+            operator = null
         }
 
-        else if (ids === 'del'){
-            let temp = curans % 10
-            curans -= temp
-            curans /= 10
-            ans = curans
-            outputScr.textContent = curans
+        else if (elemId === 'equal'){
+            const ans = operation()
+            outputScreen.innerText = ans
+            curVal = ans
+            val = ''
+            operator = null
         }
-    });
-});
 
-function calculate(a, b, op) {
-    switch (op) {
-        case 'add':
-            return a + b;
-        case 'sub':
-            return a - b;
-        case 'mul':
-            return a * b;
-        case 'div':
-            return b !== 0 ? (a / b).toFixed(10) : 'Error';
-        case 'mod':
-            return b !== 0 ? a % b : 'Error';
-        default:
-            return a;
+        else if (numArr.includes(elemId) && operator != null) {
+            val += elemId
+            outputScreen.innerText = val
+        }
+
+        else if (numArr.includes(elemId) && operator == null) {
+            curVal += elemId
+            outputScreen.innerText = curVal
+        }
+
+        else if (elemId === 'del' && operator != null){
+            val = Math.floor(val / 10)
+            outputScreen.innerText = val 
+        }
+
+        else if (elemId === 'div'){
+            operator = '/'
+            outputScreen.innerHTML = '<i class="fa-solid fa-divide" style="color: #ff9b71; font-size: 2rem"></i>'
+        }
+
+        else if (elemId === 'dot' && operator == null){
+            if (!curVal.includes('.'))
+                curVal = curVal + '.'
+                outputScreen.innerText = curVal
+        }
+
+        else if (elemId === 'dot' && operator != null){
+            if (!val.includes('.'))
+                val = val + '.'
+                outputScreen.innerText = val
+        }
+
+        else if (elemId === 'del' && operator == null){
+            curVal = Math.floor(curVal / 10)
+            outputScreen.innerText = curVal 
+        }
+
+        else if (elemId === 'sq'){
+            if (operator == null){
+                const num = parseInt(outputScreen.innerText)
+                curVal = num * num
+                outputScreen.innerText = curVal
+            }
+            else{
+                const num = parseInt(outputScreen.innerText)
+                val = num * num
+                outputScreen.innerText = val
+            }
+        }
+
+        else if (elemId in operators){
+            outputScreen.textContent = operators[elemId]
+            operator = operators[elemId]
+        }
+
+    })
+})
+
+const operation = () => {
+    switch(operator){
+        case '%':
+            return curVal % val
+        
+        case '/':
+            return curVal / val
+
+        case '*':
+            return curVal * val
+
+        case '+':
+            return curVal + val
+
+        case '-':
+            return curVal - val
     }
 }
